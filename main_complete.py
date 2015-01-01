@@ -16,7 +16,7 @@ rank = comm.Get_rank()
 
 data = {}
 
-T = 50
+T = 300
 approximate.Ntest = 10000
 Para.k = 200
 for N in [1,4,8,16,32,96]:
