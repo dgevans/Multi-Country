@@ -39,9 +39,10 @@ for N in [1,4,8,16,32,96]:
     resids = {}
     for t in range(1,T,50):
         approx = approximate.approximate(Gamma[t])
+        temp = approx.CheckEuler(y[t-1],Z[t])
         if rank == 0:
             print t
-            resids[t] = approx.CheckEuler(y[t-1],Z[t]).mean(0)
+            resids[t] = temp.mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids
         fout = file('complete_simulation.dat','wr')
