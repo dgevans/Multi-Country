@@ -7,7 +7,7 @@ Created on Thu Apr 17 12:18:27 2014
 import numpy as np
 import pycppad as ad
 
-beta = 0.95
+beta = 0.98
 gamma = 2.
 sigma = 1.
 #sigma_e = np.array([0.04,0.05,0.1,0.05])
@@ -16,7 +16,7 @@ sigma_E = np.diag(0.01*np.ones(10))
 mu_e = 0.
 mu_a = 0.
 chi = 1.
-delta = 0.06
+delta = 0.02
 xi_k = 0.33 #*.75
 
 

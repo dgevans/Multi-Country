@@ -16,10 +16,12 @@ rank = comm.Get_rank()
 
 data = {}
 
-T = 300
-approximate.Ntest = 10000
+T = 1000
+approximate.Ntest = 20000
 Para.k = 200
 for N in [1,4,8,16,32,96]:
+    if rank == 0:
+        utilities.sendMessage('Incomplete Markets','Starting: ' + str(N) )
     Para.nEps = N
     Para.sigma_E = 0.01 * np.eye(N)
     approximate.calibrate(Para)
@@ -35,19 +37,17 @@ for N in [1,4,8,16,32,96]:
     simulate.simulate_aggstate(Para,Gamma,Z,Y,Shocks,y,T)
     
     resids = {}
-    for t in range(1,T,10):
+    for t in range(1,T,50):
         if rank == 0:
             print t
         approx = approximate.approximate(Gamma[t])
-        resids[t] = approx.CheckEuler(y[t-1],Z[t])
+        resids[t] = approx.CheckEuler(y[t-1],Z[t]).mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids
-    
-if rank == 0:
-    fout = file('incomplete_simulation.dat','wr')
-    cPickle.dump(data,fout)
-    fout.close()
-    
+        fout = file('incomplete_simulation.dat','wr')
+        cPickle.dump(data,fout)
+        fout.close()
+        utilities.sendMessage('Incomplete Markets', 'Finished: ' + str(N) )
     
 
         

@@ -10,6 +10,7 @@ import pycppad as ad
 from mpi4py import MPI
 import itertools
 import smtplib
+from email.mime.text import MIMEText
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -228,9 +229,13 @@ def transpose_sum(A):
     return A + A.transpose(0,2,1)
     
     
-def sendMessage(message):
+def sendMessage(subject,message):
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.starttls()
     server.login('dgevans42@gmail.com','password')
-    server.sendmail('Python Run','5419151215@txt.att.net',message)
+    msg = MIMEText(message)
+    msg['To'] = 'dge218@nyu.edu'
+    msg['From'] = 'dgevans42@gmail.com'
+    msg['Subject'] = subject
+    server.sendmail(msg['From'],msg['To'],msg.as_string())
     server.close()
