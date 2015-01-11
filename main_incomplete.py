@@ -27,7 +27,10 @@ for N in [1,4,8,16,32,96]:
         utilities.sendMessage('Incomplete Markets','Starting: ' + str(N) )
     Para.nEps = N
     Para.sigma_E = 0.01 * np.eye(N)
-    Para.sigma_vec = 1. + 0.2*np.random.randn(N)
+    if rank ==0:
+        Para.sigma_vec = 1. + 0.2*np.random.randn(N)
+    Para.sigma_vec = comm.bcast(Para.sigma_vec)# make sure sigmas are the same
+    
     approximate.calibrate(Para)
     
     Gamma,Z,Y,Shocks,y = {},{},{},{},{}
@@ -48,7 +51,7 @@ for N in [1,4,8,16,32,96]:
             print t
             resids[t] = temp.mean(0)
     if rank == 0:
-        data[N] = Gamma,Z,Y,Shocks,y,resids
+        data[N] = Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec
         fout = file('incomplete_simulation_hetero.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
