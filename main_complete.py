@@ -14,6 +14,9 @@ simulate.approximate = approximate
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
+if rank == 0:
+    np.random.seed(5876954603456456345)
+
 data = {}
 
 T = 1000
@@ -24,6 +27,7 @@ for N in [1,4,8,16,32,96]:
         utilities.sendMessage('Complete Markets','Starting: ' + str(N) )
     Para.nEps = N
     Para.sigma_E = 0.01 * np.eye(N)
+    Para.sigma_vec = 1. + 0.2*np.random.randn(N)
     approximate.calibrate(Para)
     
     Gamma,Z,Y,Shocks,y = {},{},{},{},{}
@@ -45,7 +49,7 @@ for N in [1,4,8,16,32,96]:
             resids[t] = temp.mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids
-        fout = file('complete_simulation.dat','wr')
+        fout = file('complete_simulation_hetero.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Complete Markets', 'Finished: ' + str(N) )

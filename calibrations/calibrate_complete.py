@@ -9,7 +9,7 @@ import pycppad as ad
 
 beta = 0.98
 gamma = 2.
-sigma = 1.
+sigma_vec = np.ones(10)
 #sigma_e = np.array([0.04,0.05,0.1,0.05])
 sigma_e = np.array([0.02])
 sigma_E = np.diag(0.01*np.ones(10))
@@ -54,9 +54,11 @@ def F(w):
     Eps = w[ny+ne+nY+nz+nv+n_p+nZ+neps:ny+ne+nY+nz+nv+n_p+nZ+neps+nEps] #aggregate shock
 
     try:
-        Theta_i = Eps[int(ad.value(i))]    
+        Theta_i = Eps[int(ad.value(i))]  
+        sigma = sigma_vec[int(ad.value(i))]
     except:
         Theta_i = Eps[int(i)]
+        sigma = sigma_vec[int(i)]
             
     Xi_ = np.exp(logXi_)
     m_,m = np.exp(logm_),np.exp(logm)
@@ -109,10 +111,14 @@ def f(y):
     Expectational equations that define e=Ef(y)
     '''
     logm,nu,i,logc,logk_,f,logfk,xi_ = y #y
-    
+
+    try: 
+        sigma = sigma_vec[int(ad.value(i))]
+    except:
+        sigma = sigma_vec[int(i)]    
+        
     c,k_,fk = np.exp(logc),np.exp(logk_),np.exp(logfk)
     Uc = c**(-sigma)
-    
             
     #EUc,EUc_r,Ea_,Ek_,Emu,Erho2_,Erho3_,Efoc_k
     ret = np.empty(ne,dtype=y.dtype)
@@ -128,6 +134,10 @@ def Finv(YSS,z):
     '''
     logm,nu,i = z
     logK,logXi  = YSS
+    
+    i_s = i.astype(int)
+    
+    sigma = sigma_vec[i_s]
     
     Xi = np.exp(logXi)
         
@@ -203,7 +213,11 @@ def EulerResidual(y_,y):
     '''
     Gives euler residual given controls yesterday and controls today
     '''
+    i = y[2].astype(int)
+    sigma = sigma_vec[i]
+    
     logc_ = y_[3]
+    
     logc,logfk = y[[3,6]]
     Uc_ = np.exp(logc_)**(-sigma)
     Uc = np.exp(logc)**(-sigma)
