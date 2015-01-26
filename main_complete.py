@@ -31,6 +31,7 @@ for N in [1,4,8,16,32,96]:
         Para.sigma_vec = 1. + 0.2*np.random.randn(N)
         Para.delta_vec = 0.02 + 0.002*np.random.randn(N)
     Para.sigma_vec = comm.bcast(Para.sigma_vec)# make sure sigmas are the same
+    Para.delta_vec = comm.bcast(Para.delta_vec)
     
     approximate.calibrate(Para)
     
