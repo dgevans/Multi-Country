@@ -16,7 +16,7 @@ sigma_E = np.diag(0.01*np.ones(10))
 mu_e = 0.
 mu_a = 0.
 chi = 1.
-delta = 0.02
+delta_vec =0.02*np.ones(10)
 xi_k = 0.33 #*.75
 
 
@@ -56,9 +56,11 @@ def F(w):
     try:
         Theta_i = Eps[int(ad.value(i))]  
         sigma = sigma_vec[int(ad.value(i))]
+        delta = delta_vec[int(ad.value(i))]
     except:
         Theta_i = Eps[int(i)]
         sigma = sigma_vec[int(i)]
+        delta = delta_vec[int(i)]
             
     Xi_ = np.exp(logXi_)
     m_,m = np.exp(logm_),np.exp(logm)
@@ -147,6 +149,7 @@ def Finv(YSS,z):
     Xi = np.exp(logXi)
     
     i_s = i.astype(int)
+    delta = delta_vec[i_s]
     
     sigma = sigma_vec[i_s]    
     

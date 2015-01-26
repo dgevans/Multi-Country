@@ -15,7 +15,7 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 if rank == 0:
-    np.random.seed(5876954603456456345)
+    np.random.seed(3244390)
 
 data = {}
 
@@ -29,6 +29,7 @@ for N in [1,4,8,16,32,96]:
     Para.sigma_E = 0.01 * np.eye(N)
     if rank ==0:
         Para.sigma_vec = 1. + 0.2*np.random.randn(N)
+        Para.delta_vec = 0.02 + 0.002*np.random.randn(N)
     Para.sigma_vec = comm.bcast(Para.sigma_vec)# make sure sigmas are the same
     
     approximate.calibrate(Para)
@@ -52,7 +53,7 @@ for N in [1,4,8,16,32,96]:
             resids[t] = temp.mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec
-        fout = file('complete_simulation_hetero_test.dat','wr')
+        fout = file('complete_simulation_hetero.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Complete Markets', 'Finished: ' + str(N) )
