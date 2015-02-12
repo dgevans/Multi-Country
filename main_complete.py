@@ -21,6 +21,7 @@ data = {}
 
 T = 1000
 approximate.Ntest = 20000
+approximate.degenerate = True
 Para.k = 200
 for N in [1,4,8,16,32,96]:
     if rank == 0:
@@ -53,7 +54,7 @@ for N in [1,4,8,16,32,96]:
             resids[t] = temp.mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec
-        fout = file('complete_simulation_labor.dat','wr')
+        fout = file('complete_simulation_labor_deg.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Complete Markets', 'Finished: ' + str(N) )
