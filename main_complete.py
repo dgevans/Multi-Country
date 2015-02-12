@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import steadystate
-import calibrations.calibrate_complete as Para
+import calibrations.calibrate_complete_labor as Para
 import approximate
 import numpy as np
 import simulate_MPI as simulate
@@ -39,9 +39,8 @@ for N in [1,4,8,16,32,96]:
     Gamma[0] = np.zeros((N,3))
     Gamma[0][:,2] = np.arange(N)    
     
-    steadystate.calibrate(Para)
-    ss = steadystate.steadystate(zip(np.zeros((1,3)),np.ones(1)))
-    Z[0] = ss.get_Y()[:1]
+    approx = approximate.approximate(Gamma,fit=False)
+    Z[0] = approx.ss.get_Y()[:1]
     
     simulate.simulate_aggstate(Para,Gamma,Z,Y,Shocks,y,T)
     
@@ -54,7 +53,7 @@ for N in [1,4,8,16,32,96]:
             resids[t] = temp.mean(0)
     if rank == 0:
         data[N] = Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec
-        fout = file('complete_simulation_hetero.dat','wr')
+        fout = file('complete_simulation_labor.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Complete Markets', 'Finished: ' + str(N) )
