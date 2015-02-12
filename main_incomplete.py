@@ -38,7 +38,7 @@ for N in [1,4,8,16,32,96]:
     Gamma,Z,Y,Shocks,y = {},{},{},{},{}
     Gamma[0] = np.zeros((N,3))
     Gamma[0][:,2] = np.arange(N)    
-    approx = approximate.approximate(Gamma,fit=False)
+    approx = approximate.approximate(Gamma[0],fit=False)
     Z[0] = approx.ss.get_Y()[:1]
     
     simulate.simulate_aggstate(Para,Gamma,Z,Y,Shocks,y,T)
