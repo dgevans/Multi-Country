@@ -1302,7 +1302,7 @@ class approximate(object):
                         +np.einsum('ij,jk,k',self.dytild['pG,Y_GG'](zbar),Y2hat_GGp,phat) + np.einsum('ijk,j,k',self.dytild['pG,Y_G'](zbar),phat,Y1hat)
                         +np.einsum('ij,jk,k',self.dytild['pG,Y_Gz_pG'](zbar),Y2hat_ypz,phat) )
             if not extreme:
-                return np.hstack(( self.ss.get_y(zbar).flatten() + self.dy[eps](zbar).dot(e).flatten() + (self.dy[Eps](zbar).flatten())*E
+                return np.hstack(( self.ss.get_y(zbar).flatten() + self.dy[eps](zbar).dot(e).flatten() + self.dy[Eps](zbar).dot(E).flatten()
                                     + self.dy[p](zbar).dot(phat).flatten()
                                     + self.dy[z](zbar).dot(zhat).flatten()
                                     + self.dy[Y](zbar).dot(Y1hat).flatten()
@@ -1327,7 +1327,7 @@ class approximate(object):
                                     )
                                    ,e))
             else:
-                return np.hstack(( self.ss.get_y(zbar).flatten()  + (self.dy[Eps](zbar).flatten())*E
+                return np.hstack(( self.ss.get_y(zbar).flatten()  + self.dy[Eps](zbar).flatten().dot(E).flatten()
                                     + self.dy[p](zbar).dot(phat).flatten()
                                     + self.dy[z](zbar).dot(zhat).flatten()
                                     + self.dy[Y](zbar).dot(Y1hat).flatten()
@@ -1353,7 +1353,7 @@ class approximate(object):
             ye = np.vstack(parallel_map(compute_ye,Gamma_dist))
             y,epsilon = ye[:,:-neps],ye[:,-neps]
             Gamma = y.dot(Izy.T)
-            Ynew = (self.ss.get_Y() + Y1hat + self.dY_Eps.flatten()*E
+            Ynew = (self.ss.get_Y() + Y1hat + self.dY_Eps.dot(E)
                     + self.dY_p.dot(phat).flatten()
                     + self.dY_Z.dot(Zhat)
                     + 0.5*quadratic*(self.d2Y[sigma].dot(sigma**2).flatten() + Y2hat.flatten() + 2*Y2hat_GZ.dot(Zhat).flatten()

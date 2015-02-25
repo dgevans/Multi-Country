@@ -1,2 +1,5 @@
 *.pyc
 .DS_Store
+incomplete_simulation.dat
+incomplete_simulation_hetero.dat
+*.dat
