@@ -20,7 +20,7 @@ if rank == 0:
     np.random.seed(3244390)
 
 T = 1000
-approximate.Ntest = 20000
+approximate.Ntest = 25000
 approximate.degenerate = True
 Para.k = 200
 for N in [1,4,8,16,32,96]:
@@ -52,8 +52,9 @@ for N in [1,4,8,16,32,96]:
             print t
             resids[t] = temp.mean(0)
     if rank == 0:
-        data[N] = Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec
-        fout = file('incomplete_simulation_labor_deg.dat','wr')
+        Names = 'Gamma','Z','Y','Shocks','y','resids','sigma','delta'
+        data[N] = dict(zip(Names,[Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec,Para.delta_vec]))
+        fout = file('incomplete_simulation_labor_hetero_deg.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Incomplete Markets', 'Finished: ' + str(N) )
