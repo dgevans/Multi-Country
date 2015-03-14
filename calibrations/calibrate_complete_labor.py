@@ -220,7 +220,7 @@ def check_SS(YSS):
     return True
     
     
-def EulerResidual(y_,y):
+def EulerResidual(y_,y,Y):
     '''
     Gives euler residual given controls yesterday and controls today
     '''
