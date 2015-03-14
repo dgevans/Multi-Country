@@ -232,10 +232,10 @@ def transpose_sum(A):
 def sendMessage(subject,message):
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.starttls()
-    server.login('dgevans42@gmail.com','password')
+    server.login('econcluster@gmail.com','password')
     msg = MIMEText(message)
-    msg['To'] = 'dge218@nyu.edu'
-    msg['From'] = 'dgevans42@gmail.com'
+    msg['To'] = 'dgevans42@gmail.com'
+    msg['From'] = 'econcluster@gmail.com'
     msg['Subject'] = subject
     server.sendmail(msg['From'],msg['To'],msg.as_string())
     server.close()

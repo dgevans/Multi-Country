@@ -20,8 +20,8 @@ if rank == 0:
 data = {}
 
 T = 1000
-approximate.Ntest = 25000
-approximate.degenerate = True
+approximate.Ntest = 20000
+approximate.degenerate = False
 Para.k = 200
 for N in [1,4,8,16,32,96]:
     if rank == 0:
@@ -55,7 +55,7 @@ for N in [1,4,8,16,32,96]:
     if rank == 0:
         Names = 'Gamma','Z','Y','Shocks','y','resids','sigma','delta'
         data[N] = dict(zip(Names,[Gamma,Z,Y,Shocks,y,resids,Para.sigma_vec,Para.delta_vec]))
-        fout = file('complete_simulation_labor_hetero_deg.dat','wr')
+        fout = file('complete_labor_hetero_new.dat','wr')
         cPickle.dump(data,fout)
         fout.close()
         utilities.sendMessage('Complete Markets', 'Finished: ' + str(N) )

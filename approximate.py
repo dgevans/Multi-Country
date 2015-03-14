@@ -1000,7 +1000,7 @@ class approximate(object):
         DFhat_pp = dict_fun(DFhat_pp)
         ytild_pp = get_coefficient(DFhat_pp)
         ytild_Ypp = get_coefficient(lambda z_i : DF(z_i)[n:,Y] + DF(z_i)[n:,v].dot(Ivy).dot(self.dy[Z](z_i)).dot(IZYhat))
-        #no solve for Y_pp
+        #now solve for Y_pp
         DG_pp = self.integrate(lambda z_i : HGhat(z_i,p,p) + np.tensordot(self.DG(z_i)[nG:,y],ytild_pp(z_i),1)  )
         DG_Ypp_inv = np.linalg.inv(self.integrate(lambda z_i : self.DG(z_i)[nG:,Y] +np.tensordot(self.DG(z_i)[nG:,y],ytild_Ypp(z_i),1) ))
         self.d2Y[p,p] = np.tensordot(DG_Ypp_inv,-DG_pp,1)
@@ -1321,7 +1321,7 @@ class approximate(object):
                                     +2*quadratic_dot(self.d2y[p,eps](zbar),phat,e).flatten()
                                     +2*quadratic_dot(self.d2y[p,z](zbar),phat,zhat).flatten()
                                     +2*yhat_pG
-                                    +quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
+                                    #+quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
                                     +quadratic_dot(self.d2y[Eps,Eps](zbar),E,E).flatten()
                                     +np.einsum('ijk,jk',self.d2y[sigma_E](zbar),cov_E).flatten()
                                     )
@@ -1344,7 +1344,7 @@ class approximate(object):
                                     +2*quadratic_dot(self.d2y[p,Eps](zbar),phat,E).flatten()
                                     +2*quadratic_dot(self.d2y[p,z](zbar),phat,zhat).flatten()
                                     +2*yhat_pG
-                                    +quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
+                                    #+quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
                                     +quadratic_dot(self.d2y[Eps,Eps](zbar),E,E).flatten()
                                     +np.einsum('ijk,jk',self.d2y[sigma_E](zbar),cov_E).flatten()
                                     )
@@ -1363,8 +1363,8 @@ class approximate(object):
                     + 2*quadratic_dot(self.d2Y[Z,Eps],Zhat,E).flatten()
                     + 2*quadratic_dot(self.d2Y[p,Z],phat,Zhat).flatten()
                     + 2*quadratic_dot(self.d2Y[p,Eps],phat,E).flatten()
-#                    + 2*Y2hat_pz.dot(phat)
-                    + quadratic_dot(self.d2Y[p,p],phat,phat).flatten()) )
+                    + 2*Y2hat_pz.dot(phat)))
+                    #+ quadratic_dot(self.d2Y[p,p],phat,phat).flatten()) )
                     
             Znew = Ynew[:nZ]
             return Gamma,Znew,Ynew,epsilon,y
@@ -1401,7 +1401,7 @@ class approximate(object):
                                 +quadratic_dot(self.d2y[Z,Z](zbar),Zhat,Zhat).flatten()
                                 +2*quadratic_dot(self.d2y[p,Z](zbar),phat,Zhat).flatten()
                                 +2*quadratic_dot(self.d2y[p,Eps](zbar),phat,E).flatten()
-                                +quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
+                                #+quadratic_dot(self.d2y[p,p](zbar),phat,phat).flatten()
                                 +quadratic_dot(self.d2y[Eps,Eps](zbar),E,E).flatten()
                                 +np.einsum('ijk,jk',self.d2y[sigma_E](zbar),cov_E).flatten()
                                 ).flatten()
@@ -1420,8 +1420,8 @@ class approximate(object):
                     + quadratic_dot(self.d2Y[Z,Z],Zhat,Zhat).flatten()
                     + 2*quadratic_dot(self.d2Y[Z,Eps],Zhat,E).flatten()
                     + 2*quadratic_dot(self.d2Y[p,Z],phat,Zhat).flatten()
-                    + 2*quadratic_dot(self.d2Y[p,Eps],phat,E).flatten()
-                    + quadratic_dot(self.d2Y[p,p],phat,phat).flatten()))
+                    + 2*quadratic_dot(self.d2Y[p,Eps],phat,E).flatten()))
+                    #+ quadratic_dot(self.d2Y[p,p],phat,phat).flatten()))
                     
             Znew = Ynew[:nZ]
             return Gamma,Znew,Ynew,epsilon,y
@@ -1566,8 +1566,10 @@ class approximate(object):
         EE = []
         for i in range(Ntest):
             if rank == 0:
-                y = self.iterate(Z)[-1]
-                EE.append(Para.EulerResidual(y_.T,y.T))
+                data = self.iterate(Z)
+                y = data[-1]
+                Y = data[-3]
+                EE.append(Para.EulerResidual(y_.T,y.T,Y)[np.newaxis,:])
             else:
                 self.iterate(Z)
         if rank == 0:
